@@ -1,0 +1,135 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Lista Api",
+        "description": "Lista Api",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/",
+            "description": "Ambiente di sviluppo"
+        }
+    ],
+    "paths": {
+        "/api/auth": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login",
+                "description": "Login",
+                "operationId": "697a28edefdc1f03763147c80ebf7ce8",
+                "requestBody": {
+                    "description": "Dati per la login",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ritorna i dati dell'utente e il token necessario per le chiamate"
+                    }
+                }
+            }
+        },
+        "/api/at/refresh": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Refresh token",
+                "description": "Refresh token",
+                "operationId": "201c143c46f16434bf982b7c9af6739b",
+                "responses": {
+                    "200": {
+                        "description": "Ritorna i dati dell'utente e il token aggiornato necessario per le chiamate"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/at/logout": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout",
+                "description": "Logout",
+                "operationId": "3103d0ae32c6c98709acc744c449ffd6",
+                "responses": {
+                    "200": {
+                        "description": "Ritorna status code 200 se la logout è anadata a buon fine"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/redirect": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Dati redirect accesso con Keycloack",
+                "description": "Dati redirect accesso con Keycloack",
+                "operationId": "d2c1db4bc99e963736f5135a55d64b3f",
+                "responses": {
+                    "200": {
+                        "description": "Ritorna status code 200 se la logout è anadata a buon fine"
+                    }
+                }
+            }
+        },
+        "/api/user": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Creazione del token di tipo passport per lo user",
+                "description": "Creazione del token di tipo passport per lo user",
+                "operationId": "580478e9e1c905bfd69998953949f108",
+                "responses": {
+                    "200": {
+                        "description": "Ritorna status code 200 se la logout è anadata a buon fine"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Api autenticazione per generare il token e per il refresh token"
+        }
+    ]
+}
