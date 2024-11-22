@@ -1,7 +1,3 @@
-Here’s the English translation of the text, formatted so you can copy it easily:
-
----
-
 # Issue Project
 
 ## Languages
