@@ -1,16 +1,20 @@
-# Issue project
+Here’s the English translation of the text, formatted so you can copy it easily:
 
-## Linguaggi 
+---
 
-- php 8.3
-- laravel 11
-- node 20.11.0
-- npm 10.2.4
-- database sqlite in file presente sotto il path *storage/app/database*
+# Issue Project
+
+## Languages
+
+- PHP 8.3  
+- Laravel 11  
+- Node 20.11.0  
+- NPM 10.2.4  
+- Database: SQLite file located under the path *storage/app/database*  
 
 ## Login
 
-La login avviene attraverso SSO realm operatore.
+The login is performed via SSO.
 
 ## Docker
 
@@ -18,35 +22,29 @@ La login avviene attraverso SSO realm operatore.
 
 <pre>docker run --name issue -p 8000:80 issue:stable </pre>
 
-- app all'url [localhost](http://localhost:8000)
+- App available at [localhost](http://localhost:8000)
 
+---
 
-***
-***
+## Basic Setup
 
+- Create one or more *Milestones* (associated with the project, these are high-level groupings), similar to Epics on Jira. One is required for each project.  
+- Create *labels*, which serve as tags to group various issues.  
+- Build a dashboard to view issues based on the above groupings.  
 
+## Methods to Create Labels
 
-## Impostazioni di base
+1. Copy and manually recreate the labels and dashboards from a base project.  
+2. Use the APIs.  
 
-
-- Creare un o più *Milestones*(sono legati al progetto e sono dei raggruppamenti a livello alto), che rapperesentano quelli che su Jira sono gli Epic (un raggruppamento); questi per ogni progetto.
-- Vanno creati i *labels*, che rappresentano un modo di raggruppare in tag i vari issue
-- Creare una dashboard per la visualizzazione degli issue, secondo i raggruppamenti sopra
-
-## Modi di creare i labels
-
-1. copiare e ricreare a mano da un progetto base i vari labels e le dashboard
-2. Usare le api
-
-Per usare le api si necessità di un *access token*, su gitLab per leggere e scrivere utilizzando le api
-L'accessToken si può creare dal proprio profilo basta cliccare su *Edit Profile* e poi sulla relativa voce di Menù a destra (vedi foto sotto).
+To use the APIs, you need an *access token* on GitLab to read and write using the APIs.  
+You can generate an access token from your profile by clicking on *Edit Profile* and then selecting the appropriate menu option on the right (see the screenshot below).  
 
 <img src="public/img/createaccesstoken.png">
 
-*Esempio di chiamata api*
+*Example API call*
 
-Chiamo l'api in get dei labels (https://repo.bluarancio.com/api/v4/projects/:id_project/labels), dove si passa come Bearer Token il vostro access token,
-ciclarla e chiamare l'api di insert che è questa:
+Call the API to fetch the labels via GET (https://repo.bluarancio.com/api/v4/projects/:id_project/labels), passing your access token as a Bearer Token. Iterate over the response and call the insert API, as shown below:
 
 <pre>
 curl --location 'https://repo.bluarancio.com/api/v4/projects/:id/labels' \
@@ -56,91 +54,99 @@ curl --location 'https://repo.bluarancio.com/api/v4/projects/:id/labels' \
     "name": "Test",
     "description": "Test",
     "color": "#000000",
-    "priority":100
+    "priority": 100
 }'
 </pre>
 
-***
+---
 
-Per evitare ciò ho creato questo progetto che sarà spiegato nei prossimi Passaggi.
+## Project Description
 
-## Passaggi
-Si entra con l'utenza di operatore personale (questo così in fase di creazione si vede chi ha creato cosa), si registra il proprio access token e si seguono i passaggi sotto. 
+After logging in, register your access token and follow the steps below:
 
-1. scegliere il progetto
-2. replicare nel progetto i *labels*
-3. replicare le *dashboard*
+1. Choose the project.  
+2. Replicate the *labels* in the project.  
+3. Replicate the *dashboards*.  
 
-Una volta  entrati, verrà chiesto di salvare il proprio *access token*; se l'operazione è andata a buon fine, il sistema crea i dati base(per labels e board) che dovranno essere replicati sul progetto scelto.
+Once logged in, you will be prompted to save your *access token*. If the operation is successful, the system will create the base data (for labels and boards) to be replicated in the selected project.  
 
-Ci sono le seguenti voci di menù:
+Menu options include the following:
 
-1. *Labels*: lista dei labels, nessuna azione possibile
-2. *Boards*: lista delle boards, nessuna azione possibile
-3. *Failed Jobs*: lista dei jobs falliti
-4. *Progetti*: Lista dei progetti
+1. *Labels*: List of labels (no actions available).  
+2. *Boards*: List of boards (no actions available).  
+3. *Failed Jobs*: List of failed jobs.  
+4. *Projects*: List of projects.  
 
-Solo la pagina realtiva al menù del p.to *4*, contiene delle azione.
-La pagina si presenta in forma tabellare, dove sono riportati i seguenti campi:
-- nome del progetto
-- descrizione del progetto
-- se sono presenti labels
-- se sono presenti boards
-- azioni:
-  - link del repository
-  - info del progetto
-  - duplicazione dei labels/boards base
+Only the menu option under point *4* contains actionable items.  
+The page appears as a table, displaying the following fields:  
 
-Come si evince dal nome dell'ultimo punto, cliccacndo sul relativo pulsante si aprirà una modale, in cui sarà possibile scegliere cosa replicare (all o boards o labels);
+- Project name  
+- Project description  
+- Whether labels are present  
+- Whether boards are present  
+- Actions:  
+  - Repository link  
+  - Project info  
+  - Duplication of base labels/boards  
 
-**NOTA**: per replicare le *boards* è necessario che sia state replicate prima le *labels*
+As implied by the last point, clicking the corresponding button will open a modal where you can choose what to replicate (all, boards, or labels).  
 
-Alla scelta di un checkbox e dopocchè si è premuto sul pulsante sotto in bassso a sinistra, il sistema avvia la procedura di copia in modalità jobs, quindi il risultato non sarà visibile ma, eventualmente, solo il loro fallimento.
+**NOTE:**  
+- To replicate *boards*, the *labels* must be replicated first.  
+- If you attempt to replicate *labels* in a project where they already exist, the API will return a 409 error, and the job will fail.  
 
+Once a checkbox is selected and the button at the bottom left is clicked, the system will start the replication process as a background job. The result will not be visible immediately but may appear as a failed job if an error occurs.  
 
-## Creazione issue
+---
 
-**Singolo/Manuale**
+## Creating Issues
 
-Si và nella sezione dedicata e deve essere creato con i labels:
-- *Priority::normal**
-- *ToDo*
+**Single/Manual Creation**  
 
-**Import**
+Go to the dedicated section and create the issue with the following labels:  
+- *Priority::normal*  
+- *ToDo*  
 
-Il file csv deve contenere quanto segue:
-- HEADER:
-**Title,Description,Labels**
+**Import**  
 
-- BODY EXAMPLE
-"Test","Test description","Etichetta labels separate da ,"
+The CSV file must contain the following:  
 
+- HEADER:  
+  **Title,Description,Labels**  
 
-## Status flow
+- BODY EXAMPLE:  
+  `"Test","Test description","Label1,Label2"`
 
-- Stato iniziale: *ToDo*
-- Dallo stato inziale si può passare in *InProgress*
-- Dallo stato *inProgress*, si può passare agli stati:
-  - *Wait*, se si è in attesa di info o altro
-  - *Closed*, se è terminato
-- Dallo stato *Closed*, si può passare allo stato *ReOpen*
-- Dallo stato *ReOpen* si può passare allo stato *InProgress*
+---
+
+## Status Flow
+
+- Initial status: *ToDo*  
+- From the initial status, it can transition to *InProgress*.  
+- From *InProgress*, it can transition to:  
+  - *Wait*, if waiting for info or other details.  
+  - *Closed*, if completed.  
+- From *Closed*, it can transition to *ReOpen*.  
+- From *ReOpen*, it can transition to *InProgress*.  
 
 <img src="public/img/statusflow.png">
 
+---
 
-## Altre tipologie di task
+## Other Task Types
 
-Sono previsti dei task con priorità:
+Tasks can have the following priorities:  
 
-- Priority::low
-- Priority::normal
-- Priority::medium
-- Priority::high
+- Priority::low  
+- Priority::normal  
+- Priority::medium  
+- Priority::high  
 
-Inoltre, esistono i task senza priorità:
-- BugFix
-- SottoTask
-- Epic
+Additionally, there are tasks without priority:  
 
-**NOTA**: L'issue creato con il labels *Epic*, rappresenta un issue padre di altri issue. In pratica è la stessa cosa del *Milestone*, con la differenza che è un issue.
+- BugFix  
+- SubTask  
+- Epic  
+
+**NOTE:**  
+An issue created with the *Epic* label acts as a parent issue for other issues. Essentially, it functions like a *Milestone*, with the difference that it is an issue.  
