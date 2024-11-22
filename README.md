@@ -20,11 +20,6 @@ La login avviene attraverso SSO realm operatore.
 
 - app all'url [localhost](http://localhost:8000)
 
-## Example repository-issue
-
-
-- [Boards](https://repo.bluarancio.com/antonio.sugamele/base-prj-laravel10-vue3/-/boards)
-- [Labels](https://repo.bluarancio.com/antonio.sugamele/base-prj-laravel10-vue3/-/labels)
 
 ***
 ***
