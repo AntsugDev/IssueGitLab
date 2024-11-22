@@ -5,25 +5,27 @@
             <v-form ref="formCopy" v-model="valid" v-else>
                 <div class="linear-into">
                     <p class="p">Scegli cosa copiare</p>
+
                     <v-checkbox
-                        v-if="view.board"
                         v-model="select"
-                        label="Boards"
-                        value="boards"
+                        label="All"
+                        value="all"
                         :error-messages="notValid.msg"
                         :error="notValid.error"
                     ></v-checkbox>
+
                     <v-checkbox
-                        v-if="view.label"
                         v-model="select"
                         label="Labels"
                         value="labels"
                         :error-messages="notValid.msg"
                         :error="notValid.error"
+                        :disabled="isDisabled"
                     ></v-checkbox>
 
                 </div>
             </v-form>
+            <v-textarea readonly class="note" v-if="isDisabled" variant="outlined" no-resize rows="2" v-model="text"></v-textarea>
 
         </template>
         <template v-slot:card-action>
@@ -40,7 +42,7 @@
 
 import DialogBase from "../../../common/DialogBase.vue";
 import {rulesRequired} from "../../../../utils/rules.js";
-import {computed, onBeforeMount, ref} from "vue";
+import {computed, onBeforeMount, ref, watch} from "vue";
 import {api} from "../../../../api/index.js";
 import {useRoute, useRouter} from "vue-router";
 import {useStore} from "vuex";
@@ -55,21 +57,16 @@ const notValid = ref({
 const route = useRoute();
 const router = useRouter();
 const store = useStore();
-const view = ref({
-    board:true,
-    label:true
-})
+const isDisabled = ref(false)
 const isCheck =ref(false)
-const check = () => {
-    isCheck.value = true
-    api('data/project/'+route.params.project,'GET').then(r => {
-        view.value.board = r.isBoards
-        view.value.label = r.isLabels
-        isCheck.value = false
-    }).catch(e => {
-        isCheck.value = false
-    })
-}
+const text = ref("Attenzione !Selezionando All, si andrà a creare sia le boards, sia le labels")
+
+watch(select ,(value) => {
+    if(value.indexOf('all') !== -1)
+        isDisabled.value  =true;
+    else
+        isDisabled.value  =false;
+})
 
 const save = () => {
     loading.value = true
@@ -110,10 +107,13 @@ const save = () => {
     })
 }
 onBeforeMount(() => {
-    check()
 })
 
 </script>
 <style scoped lang="css">
-
+.note{
+    font-style: italic;
+    font-size: 12px;
+    color:#FF5252;
+}
 </style>

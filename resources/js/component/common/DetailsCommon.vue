@@ -37,14 +37,22 @@ const getContent = (key) =>{
     return key.toString().indexOf('content') === -1;
 }
 
+const isNumber = (key) =>  {
+    const converted = Number(key);
+    return !isNaN(converted);
+}
+
 const searchLabel = (key) => {
     if(props.label === null)
         return key.toString().toUpperCase().replaceAll('_',' ');
     else{
         if(props.label[key] !== undefined)
             return props.label[key].toString().toUpperCase()
-        else
-            return key.toString().toUpperCase().replaceAll('_',' ');
+        else {
+            if(!isNumber(key))
+                return key.toString().toUpperCase().replaceAll('_', ' ');
+            else return  "";
+        }
     }
 }
 
@@ -52,6 +60,8 @@ const print = (key) => {
     if(key.toString().indexOf('id') !== -1)
         return false;
     else if(key.toString().indexOf('password')  !== -1)
+        return false;
+    else if(typeof key === "number")
         return false;
     return true;
 }
@@ -64,7 +74,10 @@ const printDate = (key) => {
 }
 
 const isNull = (row) => {
-    return row !== null;
+    if(Array.isArray(row))
+        return row.length > 0
+    else
+        return row !== null ;
 }
 
 const isObject = (row) => {
@@ -86,7 +99,6 @@ const loop = (item,key) => {
             list += '<p class="p">' + searchLabel(key) + '</p>'
             for (let k of Object.keys(item)) {
                 let row = item[k];
-                console.log('k', k, row)
                 if (typeof row !== "object") {
 
                     if (print(k) && printDate(k) && isNull(row) && getExclude(k))

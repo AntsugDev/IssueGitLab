@@ -22,12 +22,22 @@ class DuplicateController extends Controller
         if($request->validationData()){
             try{
                 $data = $request->validationData();
-                $projectId =$data['project_id'];
-                $user = $request->user();
-                Bus::batch([
-                    new ClonaLabelJobs($user->access_token,$projectId),
-                    new ClonaBoardJobs($user->access_token,$projectId)
-                ])->dispatch();
+                $projectId = $data['project_id'];
+                $choice    = $data['choice'];
+                $user      = $request->user();
+
+                if(in_array('labels',$choice))
+                    ClonaLabelJobs::dispatch(base64_decode($user->access_token),$projectId);
+
+                if(in_array('boards',$choice))
+                    ClonaBoardJobs::dispatch(base64_decode($user->access_token),$projectId);
+
+                if(in_array('all',$choice))
+                    Bus::chain([
+                        new ClonaLabelJobs(base64_decode($user->access_token),$projectId),
+                        new ClonaBoardJobs(base64_decode($user->access_token),$projectId)
+                    ])->dispatch();
+
                 return (new Response())->setStatusCode(Response::HTTP_CREATED)->send();
             }catch (\Exception $e){
                 throw new \Exception($e->getMessage(),Response::HTTP_INTERNAL_SERVER_ERROR);

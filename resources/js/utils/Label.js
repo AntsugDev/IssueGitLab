@@ -23,10 +23,19 @@ const  test = {
     phone:'Telefono'
 }
 
+const Project = {
+    name: 'Nome',
+    created_at: 'Creato il',
+    issue: 'Issue',
+    description: 'Descrizione',
+    web_url:'Url'
+}
+
 
 export const Label = {
     detailsTicket: detailsTicket,
     failed: failed,
-    test:test
+    test:test,
+    Project:Project
 }
 

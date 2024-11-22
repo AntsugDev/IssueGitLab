@@ -23,22 +23,19 @@ class ProjectResource extends JsonResource
         ];
     }
 
-    protected function _getLabels(): bool
+    protected function _getLabels():array
     {
         $gitLab = new GitLab();
         $client = $gitLab->init();
         $list = $client->get('projects/'.$this->resource['id'].'/labels');
-        $response  = json_decode($list->getBody()->getContents(),true);
-        return count($response) >0 ;
+        return json_decode($list->getBody()->getContents(),true);
     }
 
-    protected function _getBoards(){
+    protected function _getBoards():array
+    {
         $gitLab = new GitLab();
         $client = $gitLab->init();
         $list = $client->get('projects/'.$this->resource['id'].'/boards');
-        $response  = json_decode($list->getBody()->getContents(),true);
-        return count(array_filter($response,function ($item){
-            return  strcmp(strtoupper($item['name']),'DEVELOPMENT') !== 0;
-        })) > 0;
+        return json_decode($list->getBody()->getContents(),true);
     }
 }

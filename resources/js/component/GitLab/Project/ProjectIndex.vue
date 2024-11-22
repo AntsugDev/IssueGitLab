@@ -1,6 +1,9 @@
 <template>
-    <router-view></router-view>
+    <router-view :items="items"></router-view>
     <PageBase title="Lista Projects">
+        <template v-slot:page-icon-end>
+            <IconActioTable icon="mdi-reload" alt="Reload" color="primary" @click="reload"></IconActioTable>
+        </template>
         <template v-slot:content>
             <TableServer
                 :items="items"
@@ -15,18 +18,18 @@
                 </template>
                 <template v-slot:[`item.labels`]="{item}">
 
-                    <IconActioTable :icon="item.labels ? 'mdi-check-bold' : 'mdi-close'"
-                                    :alt="item.labels ? 'Labels caricati' : 'Labels non caricati'"
-                                    :color="item.labels  ? 'success' : 'error'"
+                    <IconActioTable :icon="item.labels.length > 0 ? 'mdi-check-bold' : 'mdi-close'"
+                                    :alt="item.labels.length > 0 ? 'Labels caricati' : 'Labels non caricati'"
+                                    :color="item.labels.length > 0  ? 'success' : 'error'"
                     >
 
                     </IconActioTable>
 
                 </template>
                 <template v-slot:[`item.boards`]="{item}">
-                    <IconActioTable :icon="item.boards ? 'mdi-check-bold' : 'mdi-close'"
-                                    :alt="item.boards ? 'Boards caricati' : 'Boards non caricati'"
-                                    :color="item.boards  ? 'success' : 'error'"
+                    <IconActioTable :icon="item.boards.length > 0 ? 'mdi-check-bold' : 'mdi-close'"
+                                    :alt="item.boards.length > 0 ? 'Boards caricati' : 'Boards non caricati'"
+                                    :color="item.boards.length > 0  ? 'success' : 'error'"
                     >
 
                     </IconActioTable>
@@ -34,12 +37,10 @@
                 </template>
                 <template v-slot:[`item.action`]="{item}">
 
-                    <IconActioTable icon="mdi-link" color="primary" @click="openHref(item.web_url)">
-
-                    </IconActioTable>
+                    <IconActioTable icon="mdi-link" color="primary" @click="openHref(item.web_url)"></IconActioTable>
+                    <IconActioTable icon="mdi-information" color="info" alt="Info Progetto" @click="infoProgetto(item.id)"></IconActioTable>
 
                     <IconActioTable
-                        v-if="getDuplicate(item)"
                         icon="mdi-content-copy"
                         alt="Copia Labels"
                         color="error"
@@ -80,11 +81,13 @@ const options = ref({
 })
 const search = ref(null)
 
-const getDuplicate = (item)=> {
-    let check = 0;
-    if(item.labels) check++
-    if(item.boards) check++
-    return check < 2;
+const infoProgetto = (id) => {
+    router.push({
+        name:'DialogInfo',
+        params:{
+            id: id
+        }
+    })
 }
 
 const openHref = (href) => {
@@ -116,6 +119,18 @@ const loadList = ({ page, itemsPerPage, sortBy,search }) => {
         list(path)
     }
 }
+const reload = () => {
+    loadList({
+        page: 1,
+        itemsPerPage:5,
+        sortBy:{
+            key:'created_at',
+            order:'desc'
+        },
+        search: null
+    })
+}
+
 const list =(path) => {
     api(path,'GET').then(r => {
         items.value = r.content
@@ -140,25 +155,12 @@ const labels = (item) => {
 
 const copia = (select)=> {
 
-    api('data/duplicate','POST',{
-        project_id: select
-    }).then(r => {
-        store.commit('snackbar/update',{
-            show: true,
-            text: "Procedura avviata con successo",
-            color: "success",
-        })
-        loading.value = false
-    }).catch(() => {
-        loading.value = false
+    router.push({
+        name: 'DialogCopy',
+        params: {
+            project: select,
+        }
     })
-
-    // router.push({
-    //     name: 'DialogCopy',
-    //     params: {
-    //         project: select.id,
-    //     }
-    // })
 }
 watch(() => route.query.reload, (value)=>{
     if(value !== undefined && value) {

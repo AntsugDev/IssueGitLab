@@ -55,7 +55,6 @@ class ClonaLabelJobs implements ShouldQueue
         try{
             $labels = Labels::all();
             $client = $this->getClient();
-            $useMemo = new Collection();
             $labels->each(function (Labels $labels) use($client,&$useMemo){
                 $path = str_replace(':1', $this->project, env('API_GITLAB_LABELS'));
                 $payload = $labels->toArray();
@@ -63,13 +62,13 @@ class ClonaLabelJobs implements ShouldQueue
                 $request = $client->post($path,[
                     "json" => $payload
                 ]);
-                if($request->getStatusCode() >=300)
+                if($request->getStatusCode() >=300 && strcmp($request->getStatusCode(),409) !== 0)
                     throw new \Exception("Error insert labels",Response::HTTP_BAD_REQUEST);
+                else if(strcmp($request->getStatusCode(),409) === 0 && TmpJobs::where('value',$payload['name'])->count() === 0){
+                   //todoi
+                }
                 $response = json_decode($request->getBody()->getContents(),true);
-                $useMemo->add($response);
             });
-            if($useMemo->count()> 0)
-                Cache::put('jobs_labels_'.$this->project,$useMemo);
         }catch (\Exception|GuzzleException|ClientException|ServerException $e){
             throw new \Exception($e->getMessage());
         }
