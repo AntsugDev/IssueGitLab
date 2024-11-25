@@ -32,7 +32,7 @@ trait AuthTrait
         $user = (new LoadModel($user))->getModel();
         $resource =  new UserResource($user);
         $refreshTokenRepository = app(RefreshTokenRepository::class);
-        $expiredAtRefresh = Carbon::now()->addMinutes(7);
+        $expiredAtRefresh = Carbon::now()->addMinutes(80);
         $refreshToken = $refreshTokenRepository->create([
             'id' => \Illuminate\Support\Str::random(40),
             'access_token_id' => $token->token->id,

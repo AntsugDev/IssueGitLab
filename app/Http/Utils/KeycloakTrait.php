@@ -129,7 +129,7 @@ trait KeycloakTrait
         try{
             $token = $this->getToken($code,$redirectUri);
             CustomLogger::_write($token->access_token,'token-keycloack');
-            $jwt = Keycloak::decode($token->access_token,'CAI');
+            $jwt = Keycloak::decode($token->access_token,'SSO');
             Cache::put($jwt->sub.'__refresh_token',$token->refresh_token,$token->refresh_expires_in);
             Cache::put($jwt->sub.'_tk',$token->access_token, $token->expires_in);
 
