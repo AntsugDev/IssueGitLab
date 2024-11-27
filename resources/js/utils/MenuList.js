@@ -5,20 +5,20 @@ export const MenuList = (isRoot) => {
     // if(isRoot){
     return [
         {
-            text:'Labels',
+            text:'Labels Base',
             icon: 'mdi-label',
             routeName: 'LabelsIndex',
             children:[]
         },
         {
-            text:'Boards',
+            text:'Boards Base',
             icon: 'mdi-view-dashboard',
             routeName: 'BoardIndex',
             children:[]
         },
         {
-            text:'Projects',
-            icon: 'mdi-database-check',
+            text:'Lista progetti GitLab',
+            icon: 'mdi-git',
             routeName: 'ProjectIndex',
             children:[]
         },

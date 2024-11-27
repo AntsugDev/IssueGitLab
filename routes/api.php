@@ -5,6 +5,7 @@ use App\Http\Api\Auth\GitLabController;
 use App\Http\Api\Auth\KeycloakController;
 use App\Http\Api\GitLab\Controllers\Board;
 use App\Http\Api\GitLab\Controllers\DuplicateController;
+use App\Http\Api\GitLab\Controllers\IssueController;
 use App\Http\Api\GitLab\Controllers\LabelController;
 use App\Http\Api\GitLab\Controllers\ProjectController;
 use App\Http\Api\Jobs\FailedController;
@@ -37,6 +38,7 @@ Route::middleware(['auth:api',\App\Http\Middleware\ValidateSso::class])->group(f
     });
     Route::resource('labels', LabelController::class)->only(['index']);
     Route::resource('boards', Board::class)->only(['index']);
+    Route::post('issue', [IssueController::class,'store']);
 
     Route::resource('failed_jobs',FailedController::class)->only(['index','destroy','show']);
 

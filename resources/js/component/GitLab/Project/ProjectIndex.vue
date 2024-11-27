@@ -35,10 +35,24 @@
                     </IconActioTable>
 
                 </template>
+                <template v-slot:[`item.gitlab_url`]="{item}">
+                    <IconActioTable color="primary" @click="openHref(item.web_url,1)"  icon="mdi-link"></IconActioTable>
+                </template>
+                <template v-slot:[`item.boards_link`]="{item}">
+                    <IconActioTable color="warning" @click="openHref(item.web_url,2)"  icon="mdi-link"></IconActioTable>
+                </template>
+                <template v-slot:[`item.issue_link`]="{item}">
+                    <IconActioTable color="fontColorCai" @click="openHref(item.web_url,3)"  icon="mdi-link"></IconActioTable>
+                </template>
+                <template v-slot:[`item.create`]="{item}">
+                    <IconActioTable icon="mdi-folder-plus"
+                                    color="fontColorCai"
+                                    alt="Crea un issue" @click="createIssue(item.id)"></IconActioTable>
+                </template>
+
                 <template v-slot:[`item.action`]="{item}">
 
-                    <IconActioTable icon="mdi-link" color="primary" @click="openHref(item.web_url)"></IconActioTable>
-                    <IconActioTable icon="mdi-information" color="info" alt="Info Progetto" @click="infoProgetto(item.id)"></IconActioTable>
+<!--                    <IconActioTable icon="mdi-information" color="info" alt="Info Progetto" @click="infoProgetto(item.id)"></IconActioTable>-->
 
                     <IconActioTable
                         icon="mdi-content-copy"
@@ -48,6 +62,9 @@
                     >
 
                     </IconActioTable>
+
+
+
                 </template>
             </TableServer>
         </template>
@@ -66,9 +83,13 @@ const items = ref([]);
 const headers = ref([
     {title:'Name',key:'name',align:'left'},
     {title:'Description',key:'description',align:'left'},
-    {title:'Labels',key:'labels',align:'left'},
-    {title:'Boards',key:'boards',align:'left'},
-    {title:'',key:'action',align:'left'},
+    {title:'Labels',key:'labels',align:'center'},
+    {title:'Boards',key:'boards',align:'center'},
+    {title:'GitLab url',key:'gitlab_url',align:'center'},
+    {title:'Board Project',key:'boards_link',align:'center'},
+    {title:'Issue List',key:'issue_link',align:'center'},
+    {title:'Create issue',key:'create',align:'center'},
+    {title:'',key:'action',align:'center'},
 ]);
 const loading = ref(false)
 const options = ref({
@@ -90,7 +111,12 @@ const infoProgetto = (id) => {
     })
 }
 
-const openHref = (href) => {
+const openHref = (href, isBoard) => {
+    if(isBoard === 2)
+        href += "/-/boards/"
+    else if(isBoard === 3)
+        href += "/-/issues/"
+
     window.open(href, '_blank');
 }
 
@@ -162,6 +188,15 @@ const copia = (select)=> {
         }
     })
 }
+const createIssue = (select) => {
+    router.push({
+        name: 'CreateIssue',
+        params: {
+            project: select,
+        }
+    })
+}
+
 watch(() => route.query.reload, (value)=>{
     if(value !== undefined && value) {
         search.value =null;

@@ -13,6 +13,7 @@ import DialogLabels from "../component/GitLab/Project/Action/DialogLabels.vue";
 import FailedJobs from "../component/Jobs/FailedJobs.vue";
 import DialogException from "../component/Jobs/Action/DialogException.vue";
 import DialogInfo from "../component/GitLab/Project/Action/DialogInfo.vue";
+import CreateIssue from "../component/GitLab/Project/Action/CreateIssue.vue";
 
 export const router = createRouter({
     history: createWebHistory(),
@@ -75,6 +76,11 @@ export const router = createRouter({
                             path:'/action/:project',
                             component:DialogCopy,
                             name:'DialogCopy',
+                        },
+                        {
+                            path:'/issue/:project',
+                            component:CreateIssue,
+                            name:'CreateIssue',
                         },
                         {
                             path:'/info/:id',
