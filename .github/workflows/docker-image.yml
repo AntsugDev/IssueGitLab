@@ -6,7 +6,7 @@ on:
       - '*'
 
 env:
-  image_name: "showcase"
+  image_name: "issue-gitlab"
 
 jobs:
   extract_version:
